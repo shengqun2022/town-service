@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Town {
+  id        String  @id
+  name      String
+  slug      String  @unique
+  enabled   Boolean @default(true)
+  cmsJson   String  @map("cms_json")
+  updatedAt String  @map("updated_at")
+  users     User[]
+
+  @@map("towns")
+}
+
+model User {
+  id           String  @id
+  username     String  @unique
+  passwordHash String  @map("password_hash")
+  role         String
+  townId       String? @map("town_id")
+  nickname     String?
+  avatarUrl    String? @map("avatar_url")
+  createdAt    String  @map("created_at")
+  town         Town?   @relation(fields: [townId], references: [id])
+
+  @@index([townId], map: "idx_users_town")
+  @@map("users")
+}

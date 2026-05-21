@@ -1,0 +1,40 @@
+{
+  "name": "town-service",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "build": "tsup src/index.ts --format esm --platform node --target node20 --out-dir dist --clean --external @prisma/client",
+    "postinstall": "prisma generate",
+    "db:push": "prisma db push",
+    "db:seed": "tsx prisma/seed.ts",
+    "db:apply-demo-cms": "tsx prisma/apply-demo-cms.ts"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
+  "dependencies": {
+    "@fastify/cors": "^10.0.1",
+    "@fastify/multipart": "^9.4.0",
+    "@fastify/static": "^8.3.0",
+    "@fastify/swagger": "^9.4.2",
+    "@fastify/swagger-ui": "^5.2.2",
+    "@prisma/client": "^6.3.1",
+    "bcryptjs": "^2.4.3",
+    "fastify": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "nanoid": "^5.0.8",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/node": "^22.10.1",
+    "prisma": "^6.3.1",
+    "tsup": "^8.3.5",
+    "tsx": "^4.19.2",
+    "typescript": "~5.6.3"
+  }
+}
