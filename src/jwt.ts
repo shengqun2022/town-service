@@ -1,7 +1,16 @@
 import jwt from 'jsonwebtoken'
 import type { JwtUser, UserRole } from './types.js'
 
-const JWT_SECRET = process.env.JWT_SECRET || 'dev-only-change-in-production'
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET?.trim()
+  if (secret) return secret
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('JWT_SECRET is required in production')
+  }
+  return 'dev-only-change-in-production'
+}
+
+const JWT_SECRET = getJwtSecret()
 
 export function signToken(user: JwtUser): string {
   return jwt.sign(user, JWT_SECRET, { expiresIn: '7d' })

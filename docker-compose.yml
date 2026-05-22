@@ -1,0 +1,23 @@
+# 本地 / 阿里云单机：API + 持久化卷（SQLite + 上传文件）
+services:
+  api:
+    build: .
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: ${PORT:-3001}
+      # 容器内固定路径，与卷挂载一致
+      DATABASE_URL: file:/app/data/town.sqlite
+      DB_PATH: /app/data/town.sqlite
+    ports:
+      - "${PORT:-3001}:3001"
+    volumes:
+      - town_data:/app/data
+      - town_uploads:/app/uploads
+    restart: unless-stopped
+
+volumes:
+  town_data:
+  town_uploads:

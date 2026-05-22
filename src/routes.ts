@@ -21,6 +21,14 @@ function buildPublicOrigin(request: FastifyRequest): string {
   return `${proto}://${host}`
 }
 
+function buildDockerPublicOrigin(): string {
+  const configured = process.env.PUBLIC_BASE_URL?.trim().replace(/\/$/, '')
+  if (configured) return configured
+  const host = process.env.HOST?.trim() || '127.0.0.1'
+  const port = process.env.PORT?.trim() || '3001'
+  return `http://${host}:${port}`
+}
+
 async function readUploadFile(request: FastifyRequest) {
   try {
     return await request.file()
@@ -265,7 +273,8 @@ export function registerRoutes(app: FastifyInstance, db: PrismaClient) {
     const dir = path.join(process.cwd(), 'uploads', folder)
     await fs.mkdir(dir, { recursive: true })
     await fs.writeFile(path.join(dir, filename), buf)
-    return { url: `${buildPublicOrigin(request)}/static/${folder}/${filename}` }
+    const origin = process.env.NODE_ENV === 'production' ? buildDockerPublicOrigin() : buildPublicOrigin(request)
+    return { url: `${origin}/static/${folder}/${filename}` }
   }
 
   app.post(
